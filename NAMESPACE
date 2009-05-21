@@ -1,0 +1,18 @@
+import(RmiR.db)
+importClassesFrom(methods,
+                  list)
+
+importMethodsFrom(DBI,
+                  dbReadTable)
+
+importFrom(methods,
+           new)
+
+importFrom(stats,
+           cor,
+           median,
+           na.exclude,
+           sd)
+
+exportPattern("^[^\\.]")
+exportClasses("miRtcList")

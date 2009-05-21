@@ -1,0 +1,193 @@
+%\VignetteIndexEntry{RmiR Vignette}
+%\VignetteDepends{RmiR.db, RmiR, hgug4112a.db}
+%\VignetteKeywords{miRNA and gene expression correlation.}
+%\VignetteKeywords{miRNA and gene expression time course.}
+%\VignettePackage{RmiR}
+
+\documentclass[12pt]{article}
+\usepackage{hyperref}
+\usepackage{subfigure}
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+
+\textwidth=6.2in
+\textheight=8.5in
+\oddsidemargin=0.2in
+\evensidemargin=0.2in
+\headheight=0in
+\headsep=0in
+
+\author{Francesco Favero\footnote{favero.francesco@gmail.com}}
+
+\begin{document}
+\title{RmiR package vignette}
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+RmiR is an R package for the analysis of microRNA and gene expression microarrays. 
+The goal of this package is to couple microRNA and gene expression data (coming from the same RNA). We match miRNAs to corresponding gene targets using the criteria applied by different databases.
+The package uses various databases of microRNA targets from the \Rpackage{RmiR.db} package:
+\begin{itemize}
+\item{mirBase \href{http://microrna.sanger.ac.uk/targets/v5/}{http://microrna.sanger.ac.uk/targets/v5/}}
+\item{targetScan \href{http://www.targetscan.org/}{http://www.targetscan.org/}}
+\item{miRanda from microrna.org \href{http://www.microrna.org/microrna/}{http://www.microrna.org/microrna/}}
+\item{tarBase \href{http://diana.cslab.ece.ntua.gr/tarbase/}{http://diana.cslab.ece.ntua.gr/tarbase/}}
+\item{mirTarget2 from mirDB \href{http://mirdb.org/miRDB/download.html}{http://mirdb.org/miRDB/download.html}}
+\item{PicTar \href{http://pictar.mdc-berlin.de/}{http://pictar.mdc-berlin.de/}}
+\end{itemize}
+To use the package a list of miRNA and a list of genes are required, both with the respective expression values. It is more interesting to have two series, one for microRNA expression and another for gene expression, relative to different times or different treatments. In this case \Rpackage{RmiR} is useful to investigate the correlation between miRNA/Target couples.
+\par It is also possible to use the databases to simply retrieve the targets or the miRNAs, given a list of miRNAs or a list of genes respectively.  
+\par The package also includes some tools to visualise the results for coupled data and for time series experiments. The \Rpackage{RSVGTipsDevice}\cite{rsvgtipsdevice} package is required which creates plots in SVG format, that one can visualize with a SVG viewer or in a browser like Mozilla Firefox, Safari and others.
+\par For more details about using the databases have a look at \Rpackage{RmiR.db} package vignette.
+<<label=callVign, echo=TRUE, eval=FALSE>>=
+vignette("RmiR.db")
+@
+
+\section{Coupling miRNA and gene expression data}
+An analysis with \Rpackage{RmiR} starts giving to the \Rfunction{read.mir} function the list of miRNAs and the list of genes with the right annotation.
+\par Leaving the default values the function searches in \textit{targetscan} and \textit{pictar} and prints only the couples present in both databases.
+<<createLists>>=
+  genes <- data.frame(genes=c("A_23_P171258","A_23_P150053", "A_23_P150053",
+			      "A_23_P150053", "A_23_P202435", "A_24_P90097",
+			      "A_23_P127948"))
+  genes$expr <- c(1.21, -1.50, -1.34, -1.45, -2.41, -2.32, -3.03)  
+
+  mirna <- data.frame(mirna=c("hsa-miR-148b", "hsa-miR-27b", "hsa-miR-25",
+			      "hsa-miR-181a", "hsa-miR-27a", "hsa-miR-7",
+			      "hsa-miR-32", "hsa-miR-32", "hsa-miR-7"))
+  mirna$expr <- c(1.23, 3.52, -2.42, 5.2, 2.2, -1.42, -1.23, -1.20, -1.37)
+@
+
+\begin{minipage}[b]{8.5cm}
+\centering
+<<listGene>>=
+genes
+@
+\end{minipage}
+\hspace{2mm}
+\begin{minipage}[b]{8.5cm}
+\centering
+<<listmiRNA>>=
+mirna
+@
+\end{minipage}
+
+\subsection{Default parameters}
+The default parameters are set to search the items present in both \textit{TargetScan} and in \textit{PicTar} databases, and the \Robject{genes} object is identified by probe name.
+If it is not specified, the function makes the average of the different probes identifying the same gene, computing also the coefficient of variation (CV). If there is just one result, no average can be done, so the CV will be NA.
+<<read.mir1>>=
+library(RmiR)
+read.mir(genes=genes, mirna=mirna, annotation="hgug4112a.db")
+@
+
+\subsection{Change the \Robject{at.least} parameter}
+We can select the result present in at least one database:
+<<read.mir2>>=
+read.mir(genes=genes, mirna=mirna, annotation="hgug4112a.db", at.least=1)
+@
+Searching with \Robject{at.least} equal to 1 basically gives the union of the results from the selected databases.
+
+\subsection{Different \Robject{genes} identification.}
+If the result is annotated by another identification than the platform probe ID, we can specify the annotation identifiers with the parameter \Robject{id}. 
+\par The possible values are \textit{"probes"}, \textit{"genes"}, \textit{"alias"}, \textit{"ensembl"} and \textit{"unigene"}. 
+An example with entrez gene id identifiers:
+<<read.mir4>>=
+genes.e <- genes
+genes.e$gene_id <- c(22, 59, 59, 59, 120, 120, 133)
+genes.e <- genes.e[, c("gene_id", "expr")]
+genes.e
+read.mir(genes = genes.e, mirna = mirna, annotation = "hgug4112a.db", 
+	 id="genes")
+@
+Another example mixing official HGNC symbols and others aliases:
+<<read.mir4>>=
+genes.a <- genes
+genes.a$alias <- c("ABCB7", "ADD3", "ADDL", "ADD3", "AAT6", "ACTA2", "ADM")
+genes.a <- genes.a[, c("alias", "expr")]
+genes.a
+read.mir(genes = genes.a, mirna = mirna, annotation = "hgug4112a.db",
+	 id="alias")
+@
+
+\subsection{Results by platform probe ID}
+If we are using the object \Robject{genes} annotated by microarray probes, sometimes we do not need the average of the results, for example when we would like to test each probe separately. In this case, it is preferable to have just the result as it is, annotated by probe. This will obviously cause much redundancy:
+<<read.mir3>>=
+read.mir(genes=genes, mirna=mirna, annotation="hgug4112a.db", at.least=1,
+	 id.out="probes")
+@
+
+\section{Correlation between series}
+\subsection{Expected results}
+The control of target genes by microRNAs occurs at \textit{post-trascriptional} level. The miRNA binds to its target gene and inhibits \textit{translation}.
+\par In some cases the mRNA is degraded by the miRNA annealing, but this is not necessary to stop the \textit{translation} process. In the first case it is possible to see a decrease of the gene expression, while in the other cases we shouldn't observe any particular trend or even an increase of the expression value. 
+\par With a time series of microarray data it is possible to see if a target of one or more miRNAs gradually changes its expression with the equal or opposite change of the relative miRNA. Looking at the correlation between the trend of the different miRNA/target couples, we can obtain the \textit{correlated} and the \textit{anti-correlated} couples. This does not mean that there is a sure biological relevance, but it could give some hints for further inverstigation.
+\subsection{The function \Rfunction{RmiRtc}}
+To use the function \Rfunction{RmiRtc} we need two or more objects created with the function \Rfunction{read.mir}.
+<<RmiRtc>>=
+data(RmiR)
+res1<- read.mir(gene=gene1, mirna=mir1, annotation="hgug4112a.db",verbose=TRUE)
+res2<- read.mir(gene=gene2, mirna=mir2, annotation="hgug4112a.db",verbose=TRUE)
+res3<- read.mir(gene=gene3, mirna=mir3, annotation="hgug4112a.db",verbose=TRUE)
+res_tc <- RmiRtc(timeline=c("res1", "res2", "res3"), 
+		 timevalue=c(12, 24, 48))
+@
+We can decide to filter the object by a \Robject{correlation} and/or a gene expression threshold:
+<<readRmiRtc>>=
+res_fil <- readRmiRtc(res_tc, correlation=-0.9, exprLev=1, 
+		      annotation="hgug4112a.db")
+res_fil$reps
+@  
+The function \Rfunction{readRmiRtc} filter the genes by the absolute expression value set in the arguments, and returns a list with the genes ranked by the number of miRNAs satisfying the correlation threshold.
+\par To see in details the expression of miRNA and genes it is possible to plot the various trends, or print the desired results:
+<<printRmiRtc>>=
+cbind	(res_fil$couples, res_fil$geneExpr, 
+	res_fil$mirExpr)[res_fil$couples$gene_id==351 & res_fil$cor<=-0.9, ]
+@ 
+\section{Plot and visualization of the results}
+\subsection{SVG output}
+In order to present the results, the pachage uses a tool to visualize the data.
+\par With the package \Rpackage{RSVGTipsDevice} we can plot the data for a single miRNA and gene coupled experiment or for a series of experiments. The resulting image is in \textit{svg} format with the properties to have dynamic tips and hyperlinks.
+\subsection{Plot of single experiment}
+<<plotRmiR1,fig=FALSE,eval=FALSE>>=
+plotRmiRtc(res1[res1$gene_id==351,],svgname="res1_351.svg",svgTips=T)
+@
+\setkeys{Gin}{width=1\textwidth}
+\begin{figure}
+\centering
+\includegraphics{res1_351.jpg}
+\caption{Visualization in a browser with SVG support of the results of the read.mir function selecting a single gene target and its miRNA}
+\label{fig:3}
+\end{figure}
+\newpage
+\subsection{Plot a time course experiment}
+\setkeys{Gin}{width=0.8\textwidth}
+<<plotRmiR2,fig=TRUE>>=
+plotRmiRtc(res_fil,gene_id=351)
+@
+\par Setting the coordinate of the legend:
+<<plotRmiR3,fig=TRUE>>=
+plotRmiRtc(res_fil, gene_id=351, legend.y=0, legend.x=30)
+@
+
+<<plotRmiR4,fig=FALSE,eval=FALSE>>=
+plotRmiRtc(res_fil, gene_id=351, legend.y=0, legend.x=30, svgTips=T)
+@
+
+\setkeys{Gin}{width=1\textwidth}
+\begin{figure}
+\centering
+\includegraphics{RmiRtc_351.jpg}
+\caption{Visualization in a browser with SVG support of a time course experiment of the selected gene with hyperlinks and tips}
+\label{fig:4}
+\end{figure}
+
+\newpage
+%%%% bibliography
+\bibliographystyle{plain}
+\bibliography{RmiR}
+%%
+\end{document}
