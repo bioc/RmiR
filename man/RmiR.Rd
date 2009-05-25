@@ -8,8 +8,8 @@
 } 
 
 \usage{
-  RmiR(mirna=NULL,genes=NULL,annotation=NULL,dbname="targetscan",id="probes",id.out="symbol",verbose=FALSE)
-  read.mir(mirna=NULL,genes=NULL,annotation=NULL,id="probes",dbname=c("targetscan","pictar"),at.least=2,id.out="symbol",verbose=FALSE)
+  RmiR(mirna=NULL,genes=NULL,annotation=NULL,dbname="targetscan",org="hsa",id="probes",id.out="symbol",verbose=FALSE)
+  read.mir(mirna=NULL,genes=NULL,annotation=NULL,id="probes",dbname=c("targetscan","pictar"),org="hsa",at.least=2,id.out="symbol",verbose=FALSE)
 }
 
 \arguments{
@@ -20,7 +20,8 @@
   \item{annotation}{The annotation package to annotate the genes file with entrez gene ID, eg: Agilent 44k annotation="hgug4112a.db" or annotation="org.Hs.eg.db" for human not using microarrays probes.}
 
   \item{dbname}{A selected database of miRNA target. See 
-\code{RmiR_dbconn}, default is "targetscan". If using \code{read.mir} it can be a vector of databases, default are "targetscan" and "pictar".}
+\code{RmiR.hsa_dbconn}, default is "targetscan". If using \code{read.mir} it can be a vector of databases, 
+default are "targetscan" and "pictar".}
 
   \item{id}{The type of annotation of the genes input file. An accepted value is one of: "genes" for entrez gene id, "probes" for microarray probes id, "ensembl" for ensembl gene id, "unigene" for unigene gene id and "alias" for official gene symbols and aliases.}
 
@@ -28,6 +29,8 @@
 
   \item{at.least}{Minimum number of databases that should yeld the result, when the search is performed in multiple databases with \code{read.mir}. If it is 1 it is basically an union between databases. Default is 2.}
  
+  \item{org}{Define the targets database package of the desired organism. Default is "hsa"}
+
   \item{verbose}{If it is desired or not to have some verbose output while analysing the data. Default is FALSE}
 }
 
@@ -51,7 +54,7 @@
 }
 
 \seealso{
-  \code{RmiR_dbconn},
+  \code{RmiR.hsa_dbconn},
 }
 
 \examples{
@@ -89,4 +92,5 @@
 	   dbname=c("miranda", "pictar", "targetscan"), at.least=2)
 	
 }
+
 

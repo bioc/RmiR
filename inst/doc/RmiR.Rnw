@@ -1,5 +1,5 @@
 %\VignetteIndexEntry{RmiR Vignette}
-%\VignetteDepends{RmiR.db, RmiR, hgug4112a.db}
+%\VignetteDepends{RmiR.hsa, RmiR, hgug4112a.db}
 %\VignetteKeywords{miRNA and gene expression correlation.}
 %\VignetteKeywords{miRNA and gene expression time course.}
 %\VignettePackage{RmiR}
@@ -30,7 +30,7 @@
 \section{Introduction}
 RmiR is an R package for the analysis of microRNA and gene expression microarrays. 
 The goal of this package is to couple microRNA and gene expression data (coming from the same RNA). We match miRNAs to corresponding gene targets using the criteria applied by different databases.
-The package uses various databases of microRNA targets from the \Rpackage{RmiR.db} package:
+The package uses various databases of microRNA targets from the \Rpackage{RmiR.hsa} package:
 \begin{itemize}
 \item{mirBase \href{http://microrna.sanger.ac.uk/targets/v5/}{http://microrna.sanger.ac.uk/targets/v5/}}
 \item{targetScan \href{http://www.targetscan.org/}{http://www.targetscan.org/}}
@@ -42,9 +42,9 @@ The package uses various databases of microRNA targets from the \Rpackage{RmiR.d
 To use the package a list of miRNA and a list of genes are required, both with the respective expression values. It is more interesting to have two series, one for microRNA expression and another for gene expression, relative to different times or different treatments. In this case \Rpackage{RmiR} is useful to investigate the correlation between miRNA/Target couples.
 \par It is also possible to use the databases to simply retrieve the targets or the miRNAs, given a list of miRNAs or a list of genes respectively.  
 \par The package also includes some tools to visualise the results for coupled data and for time series experiments. The \Rpackage{RSVGTipsDevice}\cite{rsvgtipsdevice} package is required which creates plots in SVG format, that one can visualize with a SVG viewer or in a browser like Mozilla Firefox, Safari and others.
-\par For more details about using the databases have a look at \Rpackage{RmiR.db} package vignette.
+\par For more details about using the databases have a look at \Rpackage{RmiR.hsa} package vignette.
 <<label=callVign, echo=TRUE, eval=FALSE>>=
-vignette("RmiR.db")
+vignette("RmiR.hsa")
 @
 
 \section{Coupling miRNA and gene expression data}

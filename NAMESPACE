@@ -1,4 +1,4 @@
-import(RmiR.db)
+#import(RmiR.hsa)
 importClassesFrom(methods,
                   list)
 

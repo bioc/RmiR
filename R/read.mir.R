@@ -1,7 +1,7 @@
 read.mir <- 
-function(mirna=NULL,genes=NULL,annotation=NULL,id="probes",dbname=c("targetscan","pictar"),at.least=2,id.out="symbol",verbose=FALSE)
+function(mirna=NULL, genes=NULL, annotation=NULL, id="probes", dbname=c("targetscan","pictar"), org="hsa", at.least=2,id.out="symbol", verbose=FALSE)
 	{
-	tot <- RmiR(genes=genes,mirna=mirna,annotation=annotation,id=id,dbname=dbname[1],id.out=id.out,verbose=verbose)
+	tot <- RmiR(genes=genes,mirna=mirna,annotation=annotation,id=id,dbname=dbname[1],id.out=id.out,verbose=verbose,org=org)
 	if (length(dbname)>1)
 		{	
 		if (is.null(tot$mirCV)) tot$mirCV = NA
@@ -9,8 +9,7 @@ function(mirna=NULL,genes=NULL,annotation=NULL,id="probes",dbname=c("targetscan"
 
 		for(i in 2:length(dbname))
 			{
-			tmp <- 
-RmiR(genes=genes,mirna=mirna,annotation=annotation,id=id,dbname=dbname[i],id.out=id.out,verbose=verbose)
+			tmp <- RmiR(genes=genes,mirna=mirna,annotation=annotation,id=id,dbname=dbname[i],id.out=id.out,verbose=verbose,org=org)
 			if (nrow(tmp)!=0)
 				{
 				if (is.null(tmp$mirCV)) tmp$mirCV = NA
