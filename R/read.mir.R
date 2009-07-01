@@ -1,5 +1,6 @@
 read.mir <- 
-function(mirna=NULL, genes=NULL, annotation=NULL, id="probes", dbname=c("targetscan","pictar"), org="hsa", at.least=2,id.out="symbol", verbose=FALSE)
+function(mirna=NULL, genes=NULL, annotation=NULL, id="probes", dbname=c("targetscan","pictar"), org="Hs", 
+at.least=2,id.out="symbol", verbose=FALSE)
 	{
 	tot <- RmiR(genes=genes,mirna=mirna,annotation=annotation,id=id,dbname=dbname[1],id.out=id.out,verbose=verbose,org=org)
 	if (length(dbname)>1)

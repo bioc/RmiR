@@ -8,8 +8,9 @@
 } 
 
 \usage{
-  RmiR(mirna=NULL,genes=NULL,annotation=NULL,dbname="targetscan",org="hsa",id="probes",id.out="symbol",verbose=FALSE)
-  read.mir(mirna=NULL,genes=NULL,annotation=NULL,id="probes",dbname=c("targetscan","pictar"),org="hsa",at.least=2,id.out="symbol",verbose=FALSE)
+  RmiR(mirna=NULL,genes=NULL,annotation=NULL,dbname="targetscan",org="Hs",id="probes",id.out="symbol",verbose=FALSE)
+  
+read.mir(mirna=NULL,genes=NULL,annotation=NULL,id="probes",dbname=c("targetscan","pictar"),org="Hs",at.least=2,id.out="symbol",verbose=FALSE)
 }
 
 \arguments{
@@ -29,7 +30,7 @@ default are "targetscan" and "pictar".}
 
   \item{at.least}{Minimum number of databases that should yeld the result, when the search is performed in multiple databases with \code{read.mir}. If it is 1 it is basically an union between databases. Default is 2.}
  
-  \item{org}{Define the targets database package of the desired organism. Default is "hsa"}
+  \item{org}{Define the targets database package of the desired organism. Default is "Hs"}
 
   \item{verbose}{If it is desired or not to have some verbose output while analysing the data. Default is FALSE}
 }

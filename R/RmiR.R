@@ -1,5 +1,5 @@
 RmiR <-
-function(mirna=NULL, genes=NULL, annotation=NULL, dbname="targetscan", org="hsa", id="probes", id.out="symbol", verbose=FALSE)
+function(mirna=NULL, genes=NULL, annotation=NULL, dbname="targetscan", org="Hs", id="probes", id.out="symbol", verbose=FALSE)
 {
 	if(is.null(c(mirna,genes))) stop("missing mir and genes input")
 	if(ncol(genes)!=2 | ncol(mirna)!=2) stop("Both files must have two colums!")
@@ -159,7 +159,7 @@ function(mirna=NULL, genes=NULL, annotation=NULL, dbname="targetscan", org="hsa"
 	###
 	### Selecting the miRNA database and reduce the data as needed ### 	
 	
-	miR.org <- paste("RmiR",org,sep=".")
+	miR.org <- paste("RmiR",org,"miRNA",sep=".")
            require (miR.org,character.only=TRUE) || stop(paste(miR.org, "package must be installed first"))
         miR_com <- paste(miR.org,"dbconn",sep="_")
         miR_com <- eval(as.name(miR_com))
