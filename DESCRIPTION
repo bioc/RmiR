@@ -1,12 +1,12 @@
 Package: RmiR
 Title:   Package to work with miRNAs and miRNA targets with R 
 Description: Useful functions  to merge microRNA and respective targets using differents databases
-Version: 1.0.8
+Version: 1.0.9
 Author: Francesco Favero
 Maintainer: Francesco Favero <favero.francesco@gmail.com>
 Depends: R (>= 2.7.0), RmiR.Hs.miRNA, RSVGTipsDevice
 Suggests: hgug4112a.db,org.Hs.eg.db
 Imports: DBI, methods, stats
-License: The Artistic License, Version 2.0
+License: Artistic-2.0
 biocViews: Software,GeneExpression,Microarray,TimeCourse,Visualization
 
