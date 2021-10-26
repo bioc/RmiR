@@ -1,7 +1,7 @@
 Package: RmiR
 Title:   Package to work with miRNAs and miRNA targets with R 
 Description: Useful functions  to merge microRNA and respective targets using differents databases
-Version: 1.50.0
+Version: 1.51.0
 Author: Francesco Favero
 Maintainer: Francesco Favero <favero.francesco@gmail.com>
 Depends: R (>= 2.7.0), RmiR.Hs.miRNA, RSVGTipsDevice
